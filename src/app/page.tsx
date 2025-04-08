@@ -3,17 +3,8 @@
 import { fetchDataParallel } from "@/lib/api/fetchDataPokemon";
 import { Card } from "@/ui/cards";
 import { useEffect, useState } from "react";
-import { Underdog } from "next/font/google";
-
-export const underdog = Underdog({
-  weight: "400",
-  subsets: ["latin"],
-});
-
-interface pokemonProps {
-  name: string;
-  image: string;
-}
+import { Pokemon } from "@/lib/models/Pokemon";
+import { underdog } from "@/lib/fonts/fonts";
 
 export default function Home() {
   // render
@@ -24,8 +15,8 @@ export default function Home() {
           <Title />
         </nav>
       </header>
-      <div className=" overflow-auto no-scrollbar w-full flex justify-center pt-5">
-        <Generator className="grid grid-cols-6 gap-8" />
+      <div className="overflow-auto  no-scrollbar w-full flex justify-center pt-5">
+        <Generator className="grid grid-cols-4 gap-4" />
       </div>
     </div>
   );
@@ -41,20 +32,21 @@ const Title = () => {
 };
 
 const Generator = ({ className }: { className: string }) => {
-  const [data, setData] = useState<pokemonProps[]>([]);
+  const [data, setData] = useState<Pokemon[]>([]);
 
   useEffect(() => {
     const fetchDataAsync = async () => {
-      const response: pokemonProps[] = await fetchDataParallel(1000);
+      const response: Pokemon[] = await fetchDataParallel(1000);
       setData(response);
     };
     fetchDataAsync();
   }, []);
+
   return (
     <div className={className}>
       {data?.length > 0 ? (
         data.map((pokemon, index) => (
-          <Card.Pokemon image={pokemon.image} name={pokemon.name} key={index} />
+          <Card.Pokemon key={index} poke={pokemon} />
         ))
       ) : (
         <p>Loading...</p>
